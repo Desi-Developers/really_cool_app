@@ -29,4 +29,9 @@ RSpec.describe User, type: :model do
     user = User.new(name: 'Sumar', age: 24)
     expect(user).to be_valid
   end
+  
+  it 'is a failing test, to test out the implementation' do
+    user = User.new(name: 'Sumar', age: 24)
+    expect(user).to be_invalid
+  end
 end

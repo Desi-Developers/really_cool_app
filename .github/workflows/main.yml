@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: rails_test
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+          
+      redis:
+        # we don't really need redis but in case you need to setup, this is how it's done!
+        image: redis:alpine
+        ports: ["6379:6379"]
+        options: --entrypoint redis-server    
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Seting Up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          
+      - name: Build and Run Tests
+        env:
+          RAILS_ENV: test
+          DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+          REDIS_URL: redis://localhost:6379/0
+          # You can access secrets here as well from Github Secrets
+          SOME_SECRET: ${{ secrets.SOME_SECRET }}
+        run: |
+          sudo apt-get -yqq install libpq-dev
+          gem install bundler
+          bundle install --jobs 4 --retry 4
+          bundle exec rails db:prepare
+          bundle exec rspec
+          

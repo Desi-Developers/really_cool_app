@@ -31,9 +31,9 @@ jobs:
           
       redis:
         # we don't really need redis but in case you need to setup, this is how it's done!
-        image:redis
-        ports:[6379:6379]
-        options:--entrypoint redis-server      
+        image: redis:alpine
+        ports: ["6379:6379"]
+        options: --entrypoint redis-server    
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it

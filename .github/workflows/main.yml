@@ -37,7 +37,6 @@ jobs:
       - name: Seting Up Ruby
         uses: ruby/setup-ruby@8f312efe1262fb463d906e9bf040319394c18d3e # v1.92
         with:
-          ruby-version: 3.0.0
           bundler-cache: true
           
       - name: Build and Run Tests

@@ -23,11 +23,6 @@ jobs:
           POSTGRES_DB: rails_test
           POSTGRES_USER: rails
           POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_is_ready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
           
       redis:
         # we don't really need redis but in case you need to setup, this is how it's done!

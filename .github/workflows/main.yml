@@ -15,14 +15,20 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     services:
-      db:
-        image:postgres:11-alpine
-        ports:[5432:5432]
-        options:>-
+      postgres:
+        image: postgres:11-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: rails_test
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+        options: >-
           --health-cmd pg_is_ready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          
       redis:
         # we don't really need redis but in case you need to setup, this is how it's done!
         image:redis
@@ -41,9 +47,9 @@ jobs:
           
       - name: Build and Run Tests
         env:
-          DATABASE_URL: postgres://porstgres:@localhost:5432/rails_test
-          REDIS_URL: redis://localhost:6379/0
           RAILS_ENV: test
+          DATABASE_URL: "postgres://rails:password@localhost:5432/rails_test"
+          REDIS_URL: redis://localhost:6379/0
           # You can access secrets here as well from Github Secrets
           SOME_SECRET: ${{ secrets.SOME_SECRET }}
         run: |
